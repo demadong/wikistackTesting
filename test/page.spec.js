@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var models = require('../models')
+var models = require('../models');
 var Page = models.Page;
 var User = models.User;
 
@@ -114,15 +114,53 @@ describe('page model', function() {
 
   describe('virtuals', function() {
     describe('route', function() {
-      xit('creates correct url', function() {
-        expect()
+      beforeEach(function(done){
+				Page.create({
+					title: 'foo bar123',
+					content: 'bar',
+          urlTitle: 'foo_bar',
+					tags: ['foo', 'bar']
+				}, done )
+			});
+			afterEach(function(done) {
+				Page.remove({}, done)
+			});
+      it('creates correct url', function(done) {
+        Page.findOne({title: 'foo bar123'})
+        .then(function(page)  {
+          expect(page.route).to.equal('/wiki/' + page.urlTitle);
+          done();
+        }).then(null, done);
       });
     });
   });
 
   describe('hooks', function() {
-    xit('url only contains letters and underscores', function() {
-      expect()
+    // var page;
+    beforeEach(function(done){
+      // page = new Page({
+      //   title: 'foo bar123',
+      //   content: 'bar',
+      //   tags: ['foo', 'bar']
+      // });
+      // done();
+      Page.create({
+        title: 'foo bar123',
+        content: 'bar',
+        tags: ['foo', 'bar']
+      }, done )
+    });
+    afterEach(function(done) {
+      Page.remove({}, done)
+    });
+    it('sets urlTitle based on title before validation', function(done) {
+      Page.findOne({title: 'foo bar123'})
+      .then(function(page) {
+        page.save(function() {
+          expect(page.urlTitle).to.equal('foo_bar123');
+          done();
+        });
+      }).then(null, done);
     });
   });
 });
