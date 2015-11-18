@@ -1,3 +1,7 @@
+var models = require(../models)
+var Page = models.Page;
+var User = models.User;
+
 describe('page model', function {
   describe('validations', function() {
     xit('does not validate if title is not provided', function() {
